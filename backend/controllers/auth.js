@@ -73,7 +73,7 @@ export const login = async (req, res) => {
 			createdAt,
 			updatedAt,
 			__v,
-			...userWithoutPassword
+			...userWithoutSensitiveFields
 		} = user.toObject();
 
 		// pass the res object to create a cookie containing the jwt
@@ -84,13 +84,17 @@ export const login = async (req, res) => {
 		res.status(200).json(userWithoutSensitiveFields);
 
 		// Respond with the filtered user details and a success message
-		res.status(200).json(userWithoutPassword);
+		res.status(200).json(userWithoutSensitiveFields);
 	} catch (error) {
 		console.log(error);
 		// Return generic server error message
 		res.status(500).json({ message: "Server error" });
 	}
 };
-export const logout = (req, res) => {
-	res.json({ message: "logout" });
+export const logout = async (req, res) => {
+	// Clear the cookie when the user logs out
+	res
+		.status(200)
+		.clearCookie(process.env.AUTH_COOKIE_NAME)
+		.json({ message: "Logout Successful" });
 };
