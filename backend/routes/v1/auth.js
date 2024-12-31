@@ -8,6 +8,7 @@ import {
 	validateLogin,
 	validateSignUp,
 } from "../../middlewares/authValidation.js";
+import { requiresAuthentication } from "../../middlewares/auth.js";
 
 const authRouter = Router();
 
@@ -25,4 +26,12 @@ authRouter.post("/login", validateLogin, login);
 // /api/v1/auth/logout
 authRouter.delete("/logout", logout);
 
+// /api/v1/auth/protected
+authRouter.get(
+	"/protected",
+	requiresAuthentication,
+	(req, res) => {
+		res.json({ message: "Protected route" });
+	}
+);
 export { authRouter };
