@@ -5,6 +5,9 @@ import { connectDB } from "./db/connectDB.js";
 // Import dotenv to load environment variables from a .env file
 import { configDotenv } from "dotenv";
 
+// Import cookie-parser to parse cookies from the request headers
+import cookieParser from "cookie-parser";
+
 // Import the route handlers for API versions v1 and v2
 import { v1Router } from "./routes/v1/index.js";
 import { v2Router } from "./routes/v2/index.js";
@@ -21,6 +24,9 @@ const PORT = process.env.PORT;
 
 // Middleware to parse JSON request bodies
 app.use(express.json());
+
+// Middleware to parse cookies from the request headers
+app.use(cookieParser());
 
 // ROUTES
 app.get("/", (req, res) => {
