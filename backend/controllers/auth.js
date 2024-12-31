@@ -1,5 +1,6 @@
 import User from "../db/models/user.js";
 import bcrypt from "bcryptjs";
+import cloudinary from "../utils/cloudinary.js";
 import { generateJwtToken } from "../utils/generateJWT.js";
 export const signUp = async (req, res) => {
 	const { fullName, email, password } = req.body;
@@ -80,10 +81,7 @@ export const login = async (req, res) => {
 		// Generate JWT token with filtered user details (no sensitive info)
 		generateJwtToken(res, userWithoutSensitiveFields);
 
-		// Respond with the filtered user details and a success message
-		res.status(200).json(userWithoutSensitiveFields);
-
-		// Respond with the filtered user details and a success message
+		// Respond with the filtered user details
 		res.status(200).json(userWithoutSensitiveFields);
 	} catch (error) {
 		console.log(error);
@@ -91,10 +89,50 @@ export const login = async (req, res) => {
 		res.status(500).json({ message: "Server error" });
 	}
 };
+
+// Logout function to clear the authentication cookie and respond
 export const logout = async (req, res) => {
-	// Clear the cookie when the user logs out
-	res
-		.status(200)
-		.clearCookie(process.env.AUTH_COOKIE_NAME)
-		.json({ message: "Logout Successful" });
+	try {
+		// Clear the authentication cookie
+		res.clearCookie(process.env.AUTH_COOKIE_NAME);
+
+		// Respond with a success message
+		res.status(200).json({ message: "Logout successful" });
+	} catch (error) {
+		console.log(error);
+		// Return generic server error message
+		res
+			.status(500)
+			.json({ message: "An error occurred during logout" });
+	}
+};
+
+export const updateProfile = async (req, res) => {
+	const { profilePic } = req.body;
+	const userId = req.user._id;
+	try {
+		if (!profilePic) {
+			return res.status(400).json({
+				message: "Profile picture is required",
+			});
+		}
+
+		// Upload the profile picture to Cloudinary
+		const uploadedResponse =
+			await cloudinary.uploader.upload(profilePic);
+
+		// Update the user's profile picture in the database
+		const updatedUser = await User.findByIdAndUpdate(
+			userId,
+			{
+				profilePic: uploadedResponse.secure_url,
+			},
+			{ new: true }
+		);
+
+		console.log(updatedUser);
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({ message: "Server error" });
+	}
 };
