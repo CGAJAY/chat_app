@@ -1,6 +1,7 @@
 // Import the Express framework to create the server
 import express from "express";
 import { connectDB } from "./db/connectDB.js";
+import cors from "cors";
 
 // Import dotenv to load environment variables from a .env file
 import { configDotenv } from "dotenv";
@@ -21,6 +22,15 @@ connectDB(); // Connect to the database
 const app = express();
 
 const PORT = process.env.PORT;
+
+// Enable CORS - Allow communication with front-end
+const corsOptions = {
+	origin: process.env.FRONTEND_URL,
+	credentials: true,
+};
+
+// Middleware to enable CORS
+app.use(cors(corsOptions));
 
 // Middleware to parse JSON request bodies
 app.use(express.json());

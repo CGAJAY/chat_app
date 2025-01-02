@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { authRouter } from "./auth.js";
+import { messageRouter } from "./message.js";
 
 const v1Router = Router();
 
@@ -11,4 +12,5 @@ v1Router.get("/", (req, res) => {
 });
 
 v1Router.use("/auth", authRouter);
+v1Router.use("/message", messageRouter);
 export { v1Router };

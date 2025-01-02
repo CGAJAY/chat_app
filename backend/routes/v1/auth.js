@@ -1,8 +1,10 @@
 import { Router } from "express";
 import {
+	checkAuth,
 	login,
 	logout,
 	signUp,
+	updateProfile,
 } from "../../controllers/auth.js";
 import {
 	validateLogin,
@@ -34,4 +36,13 @@ authRouter.get(
 		res.json({ message: "Protected route" });
 	}
 );
+// /api/v1/auth/check
+authRouter.get("/check", checkAuth);
+
+authRouter.put(
+	"/update",
+	requiresAuthentication,
+	updateProfile
+);
+
 export { authRouter };
