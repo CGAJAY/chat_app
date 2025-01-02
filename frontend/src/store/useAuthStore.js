@@ -12,7 +12,7 @@ export const useAuthStore = create((set) => ({
 	isSigningUp: false, // Indicates if a sign-up process is ongoing
 	isLoggingIn: false, // Indicates if a login process is ongoing
 	isUpdatingProfile: false, // Indicates if a profile update is ongoing
-	isCheckingAuth: true, // Indicates if authentication status is being checked
+	isCheckingAuth: false, // Indicates if authentication status is being checked
 
 	// Function to check the user's authentication status
 	checkAuth: async () => {
@@ -25,6 +25,7 @@ export const useAuthStore = create((set) => ({
 				`${backendUrl}/auth/check`,
 				{
 					method: "GET",
+					headers: { "Content-Type": "application/json" },
 					credentials: "include", // Include credentials for cookies or tokens
 				}
 			);
@@ -33,11 +34,14 @@ export const useAuthStore = create((set) => ({
 
 			// Validate the response status
 			if (!response.ok) {
-				throw new Error(responseData.message);
+				set({ user: null });
+				console.log("check:", responseData.error);
+				console.log(response.status);
+				throw new Error(responseData.error);
 			}
 
 			// Update the store with the authenticated user details
-			console.log(responseData.message);
+			console.log(responseData);
 			set({ user: responseData });
 		} catch (error) {
 			// Handle errors and set the user as unauthenticated
@@ -154,6 +158,7 @@ export const useAuthStore = create((set) => ({
 			const responseData = await response.json();
 
 			if (!response.ok) {
+				console.log(responseData.message);
 				throw new Error(responseData.message);
 			}
 

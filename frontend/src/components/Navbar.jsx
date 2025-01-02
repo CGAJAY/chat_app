@@ -13,6 +13,10 @@ import {
 const Navbar = () => {
 	const { logout, user } = useAuthStore();
 
+	// const handleLogout = async () => {
+	// 	await logout();
+	// };
+
 	return (
 		// Main header container with fixed positioning and styling
 		<header
