@@ -2,6 +2,7 @@ import User from "../db/models/user.js";
 import bcrypt from "bcryptjs";
 import cloudinary from "../utils/cloudinary.js";
 import { generateJwtToken } from "../utils/generateJWT.js";
+import jwt from "jsonwebtoken";
 export const signUp = async (req, res) => {
 	const { fullName, email, password } = req.body;
 	try {
@@ -71,7 +72,6 @@ export const login = async (req, res) => {
 		// Destructure out unwanted fields and create a new user object
 		const {
 			password: _,
-			createdAt,
 			updatedAt,
 			__v,
 			...userWithoutSensitiveFields
@@ -134,5 +134,27 @@ export const updateProfile = async (req, res) => {
 	} catch (error) {
 		console.log(error);
 		res.status(500).json({ message: "Server error" });
+	}
+};
+export const checkAuth = async (req, res) => {
+	// Get the JWT (token) from the cookies
+	const token = req.cookies[process.env.AUTH_COOKIE_NAME];
+	console.log("this is my token", token);
+	try {
+		if (!token) {
+			return res
+				.status(401)
+				.json({ error: "Not authenticated" });
+		}
+		console.log("this is my token2", token);
+
+		const payload = jwt.verify(
+			token,
+			process.env.JWT_SECRET
+		);
+		console.log("this is my token3", token);
+		return res.status(200).json(payload.user);
+	} catch (error) {
+		res.status(401).json({ error: "Invalid token" });
 	}
 };
