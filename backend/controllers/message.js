@@ -12,7 +12,7 @@ export const getUsersForSidebar = async (req, res) => {
 			_id: { $ne: myId }, // Exclude the logged-in user
 		}).select("-password"); // Exclude the password field from the results
 
-		res.json({ message: filteredUsers });
+		res.json(filteredUsers);
 	} catch (error) {
 		console.log(error);
 
@@ -42,7 +42,7 @@ export const getMessages = async (req, res) => {
 			],
 		});
 
-		res.json({ message: messages });
+		res.status(200).json(messages);
 	} catch (error) {
 		console.log(error);
 		res.status(500).json({ message: "Server error" });
@@ -74,7 +74,7 @@ export const sendMessage = async (req, res) => {
 		});
 
 		// add realtime functionality
-		return res.json({ message: newMessage });
+		return res.json(newMessage);
 	} catch (error) {
 		console.log(error);
 		res.status(500).json({ message: "Server error" });

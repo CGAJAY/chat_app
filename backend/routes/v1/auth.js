@@ -40,7 +40,7 @@ authRouter.get(
 authRouter.get("/check", checkAuth);
 
 authRouter.put(
-	"/update",
+	"/update-profile",
 	requiresAuthentication,
 	updateProfile
 );
