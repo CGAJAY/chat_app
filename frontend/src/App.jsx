@@ -17,7 +17,12 @@ import { Loader } from "lucide-react";
 // Toast notifications
 import { Toaster } from "react-hot-toast";
 
+// Import the theme store
+import { useThemeStore } from "./store/useThemeStore";
+
 const App = () => {
+	// Get the theme from the theme store
+	const { theme } = useThemeStore();
 	const { user, checkAuth, isCheckingAuth } =
 		useAuthStore();
 
@@ -37,7 +42,7 @@ const App = () => {
 
 	// Main application return block
 	return (
-		<div>
+		<div data-theme={theme}>
 			{/* Navbar visible on all routes */}
 			<Navbar />
 
