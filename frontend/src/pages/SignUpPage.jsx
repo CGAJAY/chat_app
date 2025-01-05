@@ -2,6 +2,8 @@
 import { useState } from "react";
 // Zustand store for authentication state management
 import { useAuthStore } from "../store/useAuthStore";
+
+import { useNavigate } from "react-router-dom"; // For navigation
 import {
 	User,
 	Mail,
@@ -29,6 +31,9 @@ const SignUpPage = () => {
 
 	// Zustand store methods and state
 	const { signup, isSigningUp } = useAuthStore();
+
+	// React Router's navigate function
+	const navigate = useNavigate();
 
 	// Function to validate the form data before submission
 	const validateForm = () => {
@@ -90,7 +95,8 @@ const SignUpPage = () => {
 
 		if (success === true) {
 			// Call signup function from Zustand store
-			await signup(formData);
+			// Pass the form data and navigate function
+			await signup(formData, navigate);
 		}
 	};
 
