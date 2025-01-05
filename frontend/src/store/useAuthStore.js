@@ -13,6 +13,7 @@ export const useAuthStore = create((set) => ({
 	isLoggingIn: false, // Indicates if a login process is ongoing
 	isUpdatingProfile: false, // Indicates if a profile update is ongoing
 	isCheckingAuth: false, // Indicates if authentication status is being checked
+	onlineUsers: [], // Stores the list of online users
 
 	// Function to check the user's authentication status
 	checkAuth: async () => {
@@ -57,7 +58,7 @@ export const useAuthStore = create((set) => ({
 	},
 
 	// Function to sign up a user
-	signup: async (data) => {
+	signup: async (data, navigate) => {
 		// Set `isSigningUp` to `true` to indicate the process has started
 		set({ isSigningUp: true });
 		try {
@@ -80,9 +81,8 @@ export const useAuthStore = create((set) => ({
 				return toast.error(responseData.message);
 			}
 
-			// Update the store with user details on successful signup
-			set({ user: responseData });
 			toast.success("Signup successful");
+			navigate("/login"); // Redirect to the login page
 		} catch (error) {
 			// Handle different types of errors
 			if (error.name === "TypeError") {
