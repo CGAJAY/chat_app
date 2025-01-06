@@ -85,19 +85,19 @@ export const useAuthStore = create((set) => ({
 			navigate("/login"); // Redirect to the login page
 		} catch (error) {
 			// Handle different types of errors
-			if (error.name === "TypeError") {
-				// Handle network errors or issues with the fetch call
-				toast.error(
-					"Network error. Please check your connection and try again."
-				);
-				console.error("Network Error:", error.message);
-			} else {
-				// Handle application-specific or unexpected errors
-				toast.error(
-					"An unexpected error occurred. Please try again."
-				);
-				console.error("Error:", error.message);
-			}
+			// if (error.name === "TypeError") {
+			// 	// Handle network errors or issues with the fetch call
+			// 	toast.error(
+			// 		"Network error. Please check your connection and try again."
+			// 	);
+			// 	console.error("Network Error:", error.message);
+			// } else {
+			// Handle application-specific or unexpected errors
+			toast.error(
+				"An unexpected error occurred. Please try again."
+			);
+			// console.error("Error:", error.message);
+			// }
 		} finally {
 			// Indicate that the signup process has completed
 			set({ isSigningUp: false });
@@ -131,15 +131,15 @@ export const useAuthStore = create((set) => ({
 
 			toast.success("Login successful");
 		} catch (error) {
-			if (error.name === "TypeError") {
-				toast.error(
-					"Network error. Please check your connection and try again."
-				);
-				console.error("Network Error:", error.message);
-			} else {
-				toast.error(error.message);
-				console.error("Error:", error.message);
-			}
+			// if (error.name === "TypeError") {
+			// 	toast.error(
+			// 		"Network error. Please check your connection and try again."
+			// 	);
+			// 	console.error("Network Error:", error.message);
+			// } else {
+			toast.error(error.message);
+			console.error("Error:", error.message);
+			// }
 		} finally {
 			set({ isLoggingIn: false });
 		}
