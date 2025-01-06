@@ -18,7 +18,7 @@ export const useChatStore = create((set) => ({
 
 		try {
 			const response = await fetch(
-				`${backendUrl}/message/users`,
+				`${backendUrl}/messages/users`,
 				{
 					method: "GET",
 					headers: { "Content-Type": "application/json" },
