@@ -1,5 +1,6 @@
 import User from "../db/models/user.js";
 import Message from "../db/models/message.js";
+import cloudinary from "../utils/cloudinary.js";
 // Function to get users for the sidebar, excluding the logged-in user
 export const getUsersForSidebar = async (req, res) => {
 	// Extract the logged-in user's ID from the request object

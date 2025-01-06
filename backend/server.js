@@ -33,7 +33,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 // Middleware to parse JSON request bodies
-app.use(express.json());
+app.use(express.json({ limit: "10mb" }));
 
 // Middleware to parse cookies from the request headers
 app.use(cookieParser());
