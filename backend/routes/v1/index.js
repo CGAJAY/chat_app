@@ -12,5 +12,5 @@ v1Router.get("/", (req, res) => {
 });
 
 v1Router.use("/auth", authRouter);
-v1Router.use("/message", messageRouter);
+v1Router.use("/messages", messageRouter);
 export { v1Router };

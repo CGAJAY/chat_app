@@ -66,5 +66,14 @@ export const useChatStore = create((set) => ({
 	},
 	setSelectedUser: (selectedUser) =>
 		// Update the selected user
-		set({ selectedUser: user }),
+		set({ selectedUser }),
+
+	subscribeToMessages: () => {
+		// Subscribe to real-time messages
+		console.log("Subscribed to messages");
+	},
+	unsubscribeFromMessages: () => {
+		// Unsubscribe from real-time messages
+		console.log("Unsubscribed from messages");
+	},
 }));
