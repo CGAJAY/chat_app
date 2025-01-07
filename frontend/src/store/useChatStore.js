@@ -2,6 +2,7 @@ import { create } from "zustand";
 import toast from "react-hot-toast";
 // Get the backend URL from the environment
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
+import { useAuthStore } from "./useAuthStore";
 
 // Zustand store for managing chat messages
 export const useChatStore = create((set, get) => ({
@@ -96,12 +97,29 @@ export const useChatStore = create((set, get) => ({
 			toast.error("Failed to send message");
 		}
 	},
+	// Subscribe to real-time messages
 	subscribeToMessages: () => {
-		// Subscribe to real-time messages
-		console.log("Subscribed to messages");
+		const { selectedUser } = get();
+
+		if (!selectedUser) {
+			return;
+		}
+
+		// Get the socket instance from the auth store
+		const socket = useAuthStore.getState().socket;
+
+		// Listen for incoming messages
+		socket.on("newMessage", (newMessage) => {
+			const { messages } = get();
+			if (newMessage.senderId === selectedUser._id) {
+				set({ messages: [...messages, newMessage] });
+			}
+			set({ messages: [...messages, newMessage] });
+		});
 	},
 	unsubscribeFromMessages: () => {
-		// Unsubscribe from real-time messages
-		console.log("Unsubscribed from messages");
+		// Get the socket instance from the auth store
+		const socket = useAuthStore.getState().socket;
+		socket.off("newMessage");
 	},
 }));

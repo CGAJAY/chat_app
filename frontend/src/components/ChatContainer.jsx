@@ -44,6 +44,7 @@ const ChatContainer = () => {
 
 	// Scroll to the bottom of the chat messages whenever new messages are added
 	useEffect(() => {
+		// Check if the messageEndRef and messages exist
 		if (messageEndRef.current && messages) {
 			messageEndRef.current.scrollIntoView({
 				behavior: "smooth", // Smoothly scroll to the bottom
