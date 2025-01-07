@@ -1,6 +1,10 @@
 import User from "../db/models/user.js";
 import Message from "../db/models/message.js";
 import cloudinary from "../utils/cloudinary.js";
+import {
+	getReceiverSocketId,
+	io,
+} from "../utils/socket.js";
 // Function to get users for the sidebar, excluding the logged-in user
 export const getUsersForSidebar = async (req, res) => {
 	// Extract the logged-in user's ID from the request object
@@ -74,7 +78,19 @@ export const sendMessage = async (req, res) => {
 			image: imageUrl, // Optional image URL
 		});
 
-		// add realtime functionality
+		// Get the socketId of the receiver
+		const receiverSocketId =
+			getReceiverSocketId(receiverId);
+
+		// Check if the receiver is online
+		if (receiverSocketId) {
+			// Emit a "newMessage" event to the receiver
+			io.to(receiverSocketId).emit(
+				"newMessage",
+				newMessage
+			);
+		}
+
 		return res.json(newMessage);
 	} catch (error) {
 		console.log(error);
