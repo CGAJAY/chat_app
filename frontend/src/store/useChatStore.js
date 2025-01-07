@@ -18,7 +18,7 @@ export const useChatStore = create((set, get) => ({
 
 		try {
 			const response = await fetch(
-				`${backendUrl}/messages/users`,
+				`${backendUrl}/api/v1/messages/users`,
 				{
 					method: "GET",
 					headers: { "Content-Type": "application/json" },
@@ -45,7 +45,7 @@ export const useChatStore = create((set, get) => ({
 		set({ isMessagesLoading: true });
 		try {
 			const response = await fetch(
-				`${backendUrl}/messages/${userId}`,
+				`${backendUrl}/api/v1/messages/${userId}`,
 				{
 					method: "GET",
 					headers: { "Content-Type": "application/json" },
@@ -75,7 +75,7 @@ export const useChatStore = create((set, get) => ({
 		const { selectedUser, messages } = get();
 		try {
 			const response = await fetch(
-				`${backendUrl}/messages/send/${selectedUser._id}`,
+				`${backendUrl}/api/v1/messages/send/${selectedUser._id}`,
 				{
 					method: "POST",
 					headers: { "Content-Type": "application/json" },

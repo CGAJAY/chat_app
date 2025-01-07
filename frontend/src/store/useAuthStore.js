@@ -4,9 +4,10 @@ import { create } from "zustand";
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 import toast from "react-hot-toast";
+import { io } from "socket.io-client";
 
 // Zustand store for managing authentication state
-export const useAuthStore = create((set) => ({
+export const useAuthStore = create((set, get) => ({
 	// Initial state properties
 	user: null, // Stores the authenticated user's information
 	isSigningUp: false, // Indicates if a sign-up process is ongoing
@@ -14,6 +15,7 @@ export const useAuthStore = create((set) => ({
 	isUpdatingProfile: false, // Indicates if a profile update is ongoing
 	isCheckingAuth: false, // Indicates if authentication status is being checked
 	onlineUsers: [], // Stores the list of online users
+	socket: null, // Stores the socket instance
 
 	// Function to check the user's authentication status
 	checkAuth: async () => {
@@ -23,7 +25,7 @@ export const useAuthStore = create((set) => ({
 		try {
 			// Execute a GET request to the check-auth endpoint
 			const response = await fetch(
-				`${backendUrl}/auth/check`,
+				`${backendUrl}/api/v1/auth/check`,
 				{
 					method: "GET",
 					headers: { "Content-Type": "application/json" },
@@ -44,6 +46,7 @@ export const useAuthStore = create((set) => ({
 			// Update the store with the authenticated user details
 			console.log(responseData);
 			set({ user: responseData });
+			get().connectSocket(); // Connect to the socket server
 		} catch (error) {
 			// Handle errors and set the user as unauthenticated
 			console.error(
@@ -64,7 +67,7 @@ export const useAuthStore = create((set) => ({
 		try {
 			// Execute a POST request to the signup endpoint using fetch
 			const response = await fetch(
-				`${backendUrl}/auth/signup`,
+				`${backendUrl}/api/v1/auth/signup`,
 				{
 					method: "POST",
 					headers: {
@@ -83,6 +86,7 @@ export const useAuthStore = create((set) => ({
 
 			toast.success("Signup successful");
 			navigate("/login"); // Redirect to the login page
+			// get().connectSocket(); // Connect to the socket server
 		} catch (error) {
 			// Handle different types of errors
 			// if (error.name === "TypeError") {
@@ -109,7 +113,7 @@ export const useAuthStore = create((set) => ({
 
 		try {
 			const response = await fetch(
-				`${backendUrl}/auth/login`,
+				`${backendUrl}/api/v1/auth/login`,
 				{
 					method: "POST",
 					headers: {
@@ -128,8 +132,8 @@ export const useAuthStore = create((set) => ({
 
 			console.log(responseData);
 			set({ user: responseData });
-
 			toast.success("Login successful");
+			get().connectSocket(); // Connect to the socket server
 		} catch (error) {
 			// if (error.name === "TypeError") {
 			// 	toast.error(
@@ -148,7 +152,7 @@ export const useAuthStore = create((set) => ({
 	logout: async () => {
 		try {
 			const response = await fetch(
-				`${backendUrl}/auth/logout`,
+				`${backendUrl}/api/v1/auth/logout`,
 				{
 					method: "DELETE",
 					credentials: "include",
@@ -164,6 +168,7 @@ export const useAuthStore = create((set) => ({
 
 			set({ user: null });
 			toast.success("Logout successful");
+			get().disconnectSocket(); // Disconnect from the socket server
 		} catch (error) {
 			console.error("Error logging out:", error);
 			toast.error("An error occurred. Please try again.");
@@ -175,7 +180,7 @@ export const useAuthStore = create((set) => ({
 
 		try {
 			const response = await fetch(
-				`${backendUrl}/auth/update-profile`,
+				`${backendUrl}/api/v1/auth/update-profile`,
 				{
 					method: "PUT",
 					headers: {
@@ -197,6 +202,33 @@ export const useAuthStore = create((set) => ({
 		} catch (error) {
 		} finally {
 			set({ isUpdatingProfile: false });
+		}
+	},
+	connectSocket: () => {
+		const { user } = get();
+		// Check if the user is authenticated or the socket is already connected
+		if (!user || get().socket?.connected) return;
+		// Create a new socket instance
+		const socket = io(backendUrl, {
+			query: { userId: user._id }, // Send the userId as a query parameter
+		});
+
+		socket.connect(); // Connect to the socket server
+
+		set({ socket }); // Update the store with the socket instance
+
+		// Listen for the "getOnlineUsers" event
+		socket.on("getOnlineUsers", (userIds) => {
+			// Update the store with the online users
+			set({ onlineUsers: userIds });
+		});
+	},
+	disconnectSocket: () => {
+		// Check if the socket is connected
+		if (get().socket?.connected) {
+			// Disconnect the socket and set it to null
+			get().socket.disconnect();
+			set({ socket: null });
 		}
 	},
 }));

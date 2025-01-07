@@ -23,8 +23,10 @@ import { useThemeStore } from "./store/useThemeStore";
 const App = () => {
 	// Get the theme from the theme store
 	const { theme } = useThemeStore();
-	const { user, checkAuth, isCheckingAuth } =
+	const { user, checkAuth, isCheckingAuth, onlineUsers } =
 		useAuthStore();
+
+	console.log("online users", { onlineUsers });
 
 	// Check authentication status when the app mounts
 	useEffect(() => {
