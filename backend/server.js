@@ -1,4 +1,3 @@
-// Import the Express framework to create the server
 import express from "express";
 import { connectDB } from "./db/connectDB.js";
 import cors from "cors";
@@ -13,13 +12,12 @@ import cookieParser from "cookie-parser";
 import { v1Router } from "./routes/v1/index.js";
 import { v2Router } from "./routes/v2/index.js";
 
+import { app, server } from "./utils/socket.js";
+
 // Load environment variables from the .env file into process.env
 configDotenv();
 
 connectDB(); // Connect to the database
-
-// Initialize the Express application
-const app = express();
 
 const PORT = process.env.PORT;
 
@@ -61,6 +59,6 @@ app.use("*", (req, res) => {
 });
 
 // Start the server and listen on the specified port
-app.listen(PORT, () => {
+server.listen(PORT, () => {
 	console.log(`Server running on port ${PORT}`);
 });

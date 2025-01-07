@@ -141,20 +141,20 @@ export const updateProfile = async (req, res) => {
 export const checkAuth = async (req, res) => {
 	// Get the JWT (token) from the cookies
 	const token = req.cookies[process.env.AUTH_COOKIE_NAME];
-	console.log("this is my token", token);
+	// console.log("this is my token", token);
 	try {
 		if (!token) {
 			return res
 				.status(401)
 				.json({ error: "Not authenticated" });
 		}
-		console.log("this is my token2", token);
+		// console.log("this is my token2", token);
 
 		const payload = jwt.verify(
 			token,
 			process.env.JWT_SECRET
 		);
-		console.log("this is my token3", token);
+		// console.log("this is my token3", token);
 		return res.status(200).json(payload.user);
 	} catch (error) {
 		res.status(401).json({ error: "Invalid token" });
