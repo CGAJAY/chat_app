@@ -53,7 +53,7 @@ const ProfilePage = () => {
 								src={
 									selectedImg ||
 									user.profilePic ||
-									"/avatar.jpg"
+									"/avatar.png"
 								}
 								alt="Profile"
 								className="size-32 rounded-full object-cover border-4 "
