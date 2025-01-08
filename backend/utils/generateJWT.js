@@ -15,7 +15,10 @@ export const generateJwtToken = (res, user) => {
 	res.cookie(process.env.AUTH_COOKIE_NAME, token, {
 		httpOnly: true, // Prevents JS from accessing the cookie(protection against XSS attacks)
 		maxAge: 24 * 60 * 60 * 1000, //Cookie expires in 1 day
-		sameSite: "strict", // Ensures the cookie is only sent in requests originating from the same site
+		sameSite:
+			process.env.NODE_ENV === "production"
+				? "none"
+				: "lax", // Cross-site request forgery protection
 		secure: process.env.NODE_ENV === "production", // When in production mode, cookie is sent over HTTPS
 	});
 };
