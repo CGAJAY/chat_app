@@ -75,13 +75,27 @@ const App = () => {
 				/>
 
 				{/* Profile Page: Accessible only to authenticated users */}
-				<Route
+				{/* <Route
 					path="/profile"
 					element={
 						user ? (
 							<ProfilePage />
 						) : (
 							<Navigate to="/login" /> // Redirect to login if user is not authenticated
+						)
+					}
+				/> */}
+				<Route
+					path="/profile"
+					element={
+						isCheckingAuth ? (
+							<div className="flex items-center justify-center h-screen">
+								<Loader className="size-10 animate-spin" />
+							</div>
+						) : user ? (
+							<ProfilePage />
+						) : (
+							<Navigate to="/login" />
 						)
 					}
 				/>
