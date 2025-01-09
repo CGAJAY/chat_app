@@ -6,10 +6,14 @@ const backendUrl = import.meta.env.VITE_BACKEND_URL;
 import toast from "react-hot-toast";
 import { io } from "socket.io-client";
 
+// Get the user from local storage
+const initialUser = localStorage.getItem("user");
+
 // Zustand store for managing authentication state
 export const useAuthStore = create((set, get) => ({
+	// Get the user from local storage
 	// Initial state properties
-	user: null, // Stores the authenticated user's information
+	user: initialUser || null, // Stores the authenticated user's information
 	isSigningUp: false, // Indicates if a sign-up process is ongoing
 	isLoggingIn: false, // Indicates if a login process is ongoing
 	isUpdatingProfile: false, // Indicates if a profile update is ongoing
@@ -46,6 +50,11 @@ export const useAuthStore = create((set, get) => ({
 			// Update the store with the authenticated user details
 			console.log(responseData);
 			set({ user: responseData });
+			// Save the user details to local storage
+			localStorage.setItem(
+				"user",
+				JSON.stringify(responseData)
+			);
 			get().connectSocket(); // Connect to the socket server
 		} catch (error) {
 			// Handle errors and set the user as unauthenticated
@@ -54,6 +63,8 @@ export const useAuthStore = create((set, get) => ({
 				error
 			);
 			set({ user: null });
+			// Remove the user details from local storage
+			localStorage.removeItem("user");
 		} finally {
 			// Indicate that the authentication check is complete
 			set({ isCheckingAuth: false });
@@ -132,6 +143,11 @@ export const useAuthStore = create((set, get) => ({
 
 			console.log(responseData);
 			set({ user: responseData });
+			// Save the user details to local storage
+			localStorage.setItem(
+				"user",
+				JSON.stringify(responseData)
+			);
 			toast.success("Login successful");
 			get().connectSocket(); // Connect to the socket server
 		} catch (error) {
@@ -167,6 +183,8 @@ export const useAuthStore = create((set, get) => ({
 			}
 
 			set({ user: null });
+			// Remove the user details from local storage
+			localStorage.removeItem("user");
 			toast.success("Logout successful");
 			get().disconnectSocket(); // Disconnect from the socket server
 		} catch (error) {
