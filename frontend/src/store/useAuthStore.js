@@ -181,6 +181,7 @@ export const useAuthStore = create((set, get) => ({
 				console.log(responseData.message);
 				throw new Error(responseData.message);
 			}
+			console.log(responseData.message);
 
 			set({ user: null });
 			// Remove the user details from local storage
